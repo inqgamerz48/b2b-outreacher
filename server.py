@@ -15,7 +15,37 @@ from src.data_manager import Lead, Campaign, SMTPAccount, KnowledgeBase, User, g
 app = FastAPI(title="B2B Outreach Pro")
 
 # Setup Templates
+# Setup Templates
 templates = Jinja2Templates(directory="templates")
+
+# Custom Filters
+def url_to_domain(url):
+    if not url: return ""
+    try:
+        from urllib.parse import urlparse
+        if not url.startswith("http"):
+            url = "http://" + url
+        parsed = urlparse(url)
+        domain = parsed.netloc
+        if domain.startswith("www."):
+            domain = domain[4:]
+        return domain
+    except:
+        return ""
+
+templates.env.filters["domain"] = url_to_domain
+
+# Server Location Cache
+SERVER_LOCATION = {"city": "Unknown", "country": "Unknown", "query": "127.0.0.1"}
+try:
+    print("[INFO] Fetching Server Location...")
+    import requests
+    resp = requests.get("http://ip-api.com/json/", timeout=2)
+    if resp.status_code == 200:
+        SERVER_LOCATION = resp.json()
+        print(f"[INFO] Server Location: {SERVER_LOCATION.get('city')}, {SERVER_LOCATION.get('country')}")
+except Exception as e:
+    print(f"[WARN] Could not fetch location: {e}")
 
 # --- Middleware / Dependency ---
 async def get_current_user(request: Request):
@@ -164,7 +194,8 @@ async def dashboard(request: Request):
         "page": "dashboard",
         "stats": stats,
         "recent_activity": recent_activity,
-        "username": user.username
+        "username": user.username,
+        "server_location": SERVER_LOCATION
     })
 
 @app.get("/campaigns", response_class=HTMLResponse)

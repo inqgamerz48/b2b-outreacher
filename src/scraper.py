@@ -36,8 +36,39 @@ def extract_emails_from_text(text):
     valid_emails = []
     for email in emails:
         if utils.validate_email(email) and utils.is_business_email(email):
-            valid_emails.append(email)
+            if verify_email_with_eva(email):
+                valid_emails.append(email)
+            else:
+                print(f"[SKIP] Email failed verification: {email}")
     return list(set(valid_emails))
+
+def verify_email_with_eva(email):
+    """
+    Verifies email using Eva API (Free, No Auth).
+    Returns True if deliverable or unknown (safe to try), False if strictly undeliverable/spam.
+    """
+    try:
+        url = f"https://api.eva.pingutil.com/email?email={email}"
+        resp = requests.get(url, timeout=5)
+        data = resp.json()
+        
+        # Eva returns: {"data": {"email_address": "...", "domain": "...", "deliverable": true, "spam": false, ...}, "success": true}
+        if not data.get("success"):
+            return True # Fail open if API issues
+            
+        result = data.get("data", {})
+        if result.get("spam"):
+            return False # Reject spam/disposable
+            
+        if not result.get("deliverable") and not result.get("catch_all"):
+             # If strictly not deliverable AND not catch_all -> Reject
+             # Note: catch_all often returns deliverable=false or unknown, so we usually keep catch_all
+             return False
+             
+        return True
+    except Exception as e:
+        print(f"[WARN] Eva Verification failed for {email}: {e}")
+        return True # Fail open
 
 def get_soup(url):
     """Helper to get BeautifulSoup object with safety headers."""
