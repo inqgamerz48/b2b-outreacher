@@ -49,8 +49,8 @@ Now, let's turn it on.
     👉 **http://localhost:8000**
 
 3.  **Log In**:
-    - Username: `admin`
-    - Password: `password123`
+    - Click **"Create Account"** to register your Admin user.
+    - The first registered user acts as the system owner.
 
 ---
 

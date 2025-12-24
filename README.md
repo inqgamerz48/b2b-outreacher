@@ -50,8 +50,8 @@ python verify_system.py
 python server.py
 ```
 Visit **http://localhost:8000**
-- **Default Admin**: `admin` / `password123`
-- Or click **"Create Account"** to register a new user.
+- Click **"Create Account"** to register your Admin user.
+- The first registered user acts as the system owner.
 
 ### 4. Train the Brain (Optional)
 Pull ~1200 training examples from the web:
