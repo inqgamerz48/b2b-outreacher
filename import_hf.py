@@ -23,7 +23,7 @@ DATASETS = [
 TARGET_TOTAL = 1000
 
 def import_hf_data():
-    print(f"[*] Starting GIGA-SCALE AI Training (Target: {TARGET_TOTAL} Examples)...")
+    print(f"[*] Starting AI Enrichment (Target: {TARGET_TOTAL} Curated Examples)...")
     db = next(get_db())
     total_imported = 0
     

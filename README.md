@@ -1,6 +1,6 @@
 # 🚀 B2B Outreach Pro (SaaS Edition)
 
-**The Ultimate AI-Powered Cold Email Engine.**  
+**The Ultimate AI-Powered Outreach Engine.**  
 *Self-Hosted, Multi-Tenant, and Self-Learning.*
 
 ![Dashboard Preview](https://cdn.dribbble.com/users/411475/screenshots/16279163/media/4c776483568c04ec52431770956973e6.png) 
@@ -12,17 +12,17 @@
 
 ### 🧠 1. Self-Learning AI Brain (RAG)
 - **Custom Knowledge**: Feed it your case studies, tone guides, and offers.
-- **Auto-Training**: Pulls 1000+ real-world examples from Hugging Face to learn "good" copywriting instantly.
-- **Context Aware**: Every email it writes is hyper-personalized using your unique brain data.
+- **Auto-Training**: Enriches the model with 1000+ curated business communication examples.
+- **Context Aware**: Every message is hyper-personalized using your unique brain data.
 
 ### 🫧 2. Multi-Tenant SaaS Architecture
 - **User "Bubbles"**: Strictly isolates data between users. A perfect foundation for selling this as a SaaS.
-- **Global vs. Private Memory**: All users share the "Global" master training, but keep their own "Private" offers/data secret.
+- **Global vs. Private Memory**: All users share the "Global" master knowledge base, but keep their own "Private" offers/data secret.
 
-### 📧 3. Advanced Outreach Engine
+### 📧 3. Advanced Engagement Engine
 - **Smart Drip Sequences**: Visual campaign builder with delays and follow-ups.
-- **Inbox Rotation**: Load balance sending across multiple SMTP accounts to avoid spam filters.
-- **Deep Scraping**: Spider crawls websites to find hidden contacts (not just homepage `mailto:`).
+- **Inbox Rotation**: Load balance sending across multiple accounts to ensure high deliverability and compliance.
+- **Public Data Discovery**: Ethically finds business contact information from publicly available web pages.
 - **Reply Monitor**: AI reads replies and categorizes them (Interested, OOO, Not Interested).
 
 ### 🎨 4. Modern UI & Security

@@ -54,13 +54,13 @@ Now, let's turn it on.
 
 ---
 
-## 🧠 5. Training the AI (Optional)
+## 🧠 5. Enhancing the AI (Optional)
 Want to make the AI smarter?
-1.  Run the training script:
+1.  Run the enrichment script:
     ```bash
     python import_hf.py
     ```
-    *This will pull 1000+ examples from the internet and feed them to your Brain.*
+    *This will ingest 1000+ curated examples to improve generation quality.*
 
 ---
 
