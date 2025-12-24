@@ -6,6 +6,9 @@
 ![Dashboard Preview](https://cdn.dribbble.com/users/411475/screenshots/16279163/media/4c776483568c04ec52431770956973e6.png) 
 *(Note: Placeholder image, actual UI is built with TailwindCSS)*
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/inqgamerz48/b2b-outreacher)
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/inqgamerz48/b2b-outreacher)
+
 ---
 
 ## 🌟 Features

@@ -1,0 +1,41 @@
+{
+    "name": "B2B Outreach Pro",
+    "description": "AI-Powered Cold Outreach System with Multi-Tenant Support.",
+    "repository": "https://github.com/inqgamerz48/b2b-outreacher",
+    "logo": "https://cdn.dribbble.com/users/411475/screenshots/16279163/media/4c776483568c04ec52431770956973e6.png",
+    "keywords": [
+        "python",
+        "fastapi",
+        "ai",
+        "email",
+        "marketing"
+    ],
+    "env": {
+        "AI_PROVIDER": {
+            "description": "AI Provider (openai, anthropic, google)",
+            "value": "openai",
+            "required": false
+        },
+        "AI_API_KEY": {
+            "description": "API Key for your chosen AI Provider",
+            "required": false
+        },
+        "DATABASE_URL": {
+            "description": "PostgreSQL Connection String (Auto-set by Heroku Postgres)",
+            "required": false
+        },
+        "SMTP_USER": {
+            "description": "Email address for sending emails",
+            "required": false
+        },
+        "SMTP_PASSWORD": {
+            "description": "App Password for your email account",
+            "required": false
+        }
+    },
+    "buildpacks": [
+        {
+            "url": "heroku/python"
+        }
+    ]
+}
