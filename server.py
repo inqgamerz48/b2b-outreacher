@@ -283,6 +283,54 @@ def trigger_send(background_tasks: BackgroundTasks):
     background_tasks.add_task(email_sender.process_email_queue)
     return {"message": "Sending started"}
 
+@app.get("/settings", response_class=HTMLResponse)
+async def settings_view(request: Request):
+    """
+    User Settings Page.
+    """
+    db = next(get_db())
+    user = get_user_from_request(request, db)
+    if not user:
+        db.close()
+        return RedirectResponse("/login")
+    db.close()
+    
+    return templates.TemplateResponse("settings.html", {
+        "request": request,
+        "page": "settings",
+        "username": user.username
+    })
+
+@app.get("/inbox", response_class=HTMLResponse)
+async def inbox_view(request: Request):
+    """
+    Inbox View (Leads with Replied status).
+    """
+    db = next(get_db())
+    user = get_user_from_request(request, db)
+    if not user:
+        db.close()
+        return RedirectResponse("/login")
+    
+    # Fetch leads with 'Replied' status (or just list all contacted for now as a fallback if no replies)
+    # For a real inbox we'd want Replied. Let's show "Replied" and "Contacted" so list isn't empty for demo.
+    leads = db.query(Lead).filter_by(user_id=user.id).filter(
+        Lead.status.in_(['Replied', 'Contacted'])
+    ).order_by(Lead.last_contacted_at.desc()).all()
+    
+    db.close()
+    
+    return templates.TemplateResponse("inbox.html", {
+        "request": request,
+        "page": "inbox",
+        "leads": leads,
+        "username": user.username
+    })
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return Response(status_code=204)
+
 # --- Cloud Admin Routes ---
 
 @app.post("/admin/train")
@@ -371,4 +419,4 @@ if __name__ == "__main__":
     print("[INFO] Initializing Database...")
     data_manager.initialize_db()
     print("[INFO] DB Ready. Listening on 0.0.0.0:8000")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)

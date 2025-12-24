@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Inbox 📥</h2>
+            <p class="text-gray-500">View and manage replies from your leads.</p>
+        </div>
+        <div>
+            <span class="bg-blue-100 text-blue-800 font-medium px-3 py-1 rounded-full text-sm">
+                {{ leads|length }} Replies
+            </span>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-gray-600">
+                <thead class="bg-gray-50 text-xs uppercase font-semibold text-gray-500">
+                    <tr>
+                        <th class="px-6 py-4">Lead</th>
+                        <th class="px-6 py-4">Company</th>
+                        <th class="px-6 py-4">Status</th>
+                        <th class="px-6 py-4">Last Contact</th>
+                        <th class="px-6 py-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for lead in leads %}
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 font-medium text-gray-800">{{ lead.first_name }} {{ lead.last_name
+                            }}<br><span class="text-gray-400 font-normal">{{ lead.email }}</span></td>
+                        <td class="px-6 py-4">{{ lead.company }}</td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                {{ lead.status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if lead.last_contacted_at %}
+                            {{ lead.last_contacted_at.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            <a href="mailto:{{ lead.email }}"
+                                class="text-blue-600 hover:text-blue-800 font-medium">Reply</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+                            <i class="fa-solid fa-inbox text-4xl mb-3 block text-gray-200"></i>
+                            No replies yet. Keep reaching out!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
