@@ -19,7 +19,7 @@
 -   **Backend**: Python (FastAPI) - High performance, async.
 -   **Database**: SQLAlchemy (SQLite for portability, easy swap to Postgres).
 -   **Frontend**: TailwindCSS + Jinja2 (Server-Side Rendered for speed and SEO).
--   **AI**: Modular design (compatible with OpenAI, Anthropic, Gemini).
+-   **AI**: Modular design (compatible with OpenAI, Anthropic, Gemini). User-configured BYO-Key.
 
 ## 💼 Business Potential
 1.  **SaaS Subscription**: Charge $99-$299/mo per seat.

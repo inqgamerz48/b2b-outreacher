@@ -10,25 +10,32 @@
 
 ## 🌟 Features
 
-### 🧠 1. Self-Learning AI Brain (RAG)
-- **Custom Knowledge**: Feed it your case studies, tone guides, and offers.
-- **Auto-Training**: Enriches the model with 1000+ curated business communication examples.
-- **Context Aware**: Every message is hyper-personalized using your unique brain data.
+### 🧠 1. Self-Learning AI Brain (BYO-Key)
+-   **Bring Your Own Brain**: Plug & Play support for **OpenAI (GPT-4), Anthropic (Claude), and Google (Gemini)**.
+-   **Custom Knowledge**: Feed it your case studies, tone guides, and offers.
+-   **Context Aware**: Every message is hyper-personalized using your unique brain data.
 
 ### 🫧 2. Multi-Tenant SaaS Architecture
-- **User "Bubbles"**: Strictly isolates data between users. A perfect foundation for selling this as a SaaS.
-- **Global vs. Private Memory**: All users share the "Global" master knowledge base, but keep their own "Private" offers/data secret.
+-   **User "Bubbles"**: Strictly isolates data between users. A perfect foundation for selling this as a SaaS.
+-   **Global vs. Private Memory**: All users share the "Global" master knowledge base, but keep their own "Private" offers/data secret.
 
 ### 📧 3. Advanced Engagement Engine
-- **Smart Drip Sequences**: Visual campaign builder with delays and follow-ups.
-- **Inbox Rotation**: Load balance sending across multiple accounts to ensure high deliverability and compliance.
-- **Public Data Discovery**: Ethically finds business contact information from publicly available web pages.
-- **Reply Monitor**: AI reads replies and categorizes them (Interested, OOO, Not Interested).
+-   **Smart Drip Sequences**: Visual campaign builder with delays and follow-ups.
+-   **Inbox Rotation**: Load balance sending across multiple accounts to ensure high deliverability and compliance.
+-   **Public Data Discovery**: Ethically finds business contact information from publicly available web pages.
+-   **Reply Monitor**: AI reads replies and categorizes them (Interested, OOO, Not Interested).
 
 ### 🎨 4. Modern UI & Security
-- **Tech**: FastAPI + Jinja2 + TailwindCSS.
-- **Auth**: Secure Login/Registration with hashed passwords.
-- **Dashboard**: Real-time charts and activity feeds.
+-   **Tech**: FastAPI + Jinja2 + TailwindCSS.
+-   **Auth**: Secure Login/Registration with hashed passwords.
+-   **Dashboard**: Real-time charts and activity feeds.
+-   **Visuals**: Logo enrichment via DuckDuckGo API.
+-   **Location**: Automatic server location detection via ip-api.
+
+### 🔌 5. Integrated Public APIs (Free & No-Auth)
+-   **Eva (PingUtil)**: Validates every email before it enters your DB. 
+-   **DuckDuckGo Icons**: Fetches company logos instantly.
+-   **ip-api**: Provides geolocation data for the dashboard.
 
 ---
 
@@ -44,16 +51,17 @@ pip install -r requirements.txt
 python server.py
 ```
 Visit **http://localhost:8000**
-- Click **"Create Account"** to register your Admin user.
+-   Click **"Create Account"** to register your Admin user.
+-   **Start the Brain**: Go to **Settings**, select your AI Provider (e.g. OpenAI), and paste your API Key.
 
 ### 3. Verify & Train (Web UI)
-- Go to **/brain** ➔ Click **"Health"** to verify system.
-- Go to **/brain** ➔ Click **"Auto-Train"** to enrich AI.
+-   Go to **/brain** ➔ Click **"Health"** to verify system.
+-   Go to **/brain** ➔ Click **"Auto-Train"** to enrich AI.
 
 ### 4. Train the Brain (Optional)
 Pull ~1200 training examples from the web:
 ```bash
-python import_hf.py
+python src/ai_trainer.py
 ```
 
 ---
@@ -70,3 +78,8 @@ python import_hf.py
 ## 🛡️ License
 Proprietary / Closed Source.
 Built for the User.
+
+## 🔗 Credits
+- **Eva API**: Email Verification (No Key)
+- **DuckDuckGo**: Favicons
+- **ip-api**: Geolocation

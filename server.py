@@ -12,6 +12,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from src import data_manager, scraper, email_sender, campaign_manager, account_manager, auth
 from src.data_manager import Lead, Campaign, SMTPAccount, KnowledgeBase, User, get_db
 
+
 app = FastAPI(title="B2B Outreach Pro")
 
 # Setup Templates
@@ -43,7 +44,10 @@ try:
     resp = requests.get("http://ip-api.com/json/", timeout=2)
     if resp.status_code == 200:
         SERVER_LOCATION = resp.json()
-        print(f"[INFO] Server Location: {SERVER_LOCATION.get('city')}, {SERVER_LOCATION.get('country')}")
+        try:
+            print(f"[INFO] Server Location: {SERVER_LOCATION.get('city')}, {SERVER_LOCATION.get('country')}")
+        except:
+            print("[INFO] Server Location: (Unicode Name)")
 except Exception as e:
     print(f"[WARN] Could not fetch location: {e}")
 
@@ -206,7 +210,15 @@ async def campaigns_page(request: Request):
         db.close()
         return RedirectResponse("/login")
 
-    campaigns = db.query(Campaign).filter_by(user_id=user.id).all()
+    campaigns_orm = db.query(Campaign).filter_by(user_id=user.id).all()
+    campaigns = []
+    for c in campaigns_orm:
+        campaigns.append({
+            "name": c.name,
+            "status": c.status,
+            "leads_count": len(c.leads),
+            "created_at": c.created_at
+        })
     db.close()
     
     return templates.TemplateResponse("campaigns.html", {
@@ -321,16 +333,47 @@ async def settings_view(request: Request):
     """
     db = next(get_db())
     user = get_user_from_request(request, db)
-    if not user:
-        db.close()
-        return RedirectResponse("/login")
-    db.close()
+    # Pass current config to template for pre-filling
+    import config
+    current_config = {
+        "AI_PROVIDER": config.AI_PROVIDER,
+        "AI_API_KEY": config.AI_API_KEY,
+        "AI_MODEL": config.AI_MODEL
+    }
     
     return templates.TemplateResponse("settings.html", {
         "request": request,
         "page": "settings",
-        "username": user.username
+        "username": user.username,
+        "config": current_config
     })
+
+@app.post("/settings/update")
+async def update_settings(
+    request: Request, 
+    ai_provider: str = Form(...), 
+    ai_api_key: str = Form(""),
+    ai_model: str = Form("")
+):
+    import config
+    
+    # Save to secrets.json
+    new_secrets = {
+        "AI_PROVIDER": ai_provider,
+        "AI_API_KEY": ai_api_key,
+        "AI_MODEL": ai_model
+    }
+    
+    if config.save_secrets(new_secrets):
+        # Reload config in memory (simple hack, improved in prod)
+        config._secrets = config.load_secrets()
+        config.AI_PROVIDER = config.get_config("AI_PROVIDER")
+        config.AI_API_KEY = config.get_config("AI_API_KEY")
+        config.AI_MODEL = config.get_config("AI_MODEL")
+        
+        return RedirectResponse(url="/settings?msg=Settings Saved", status_code=303)
+    else:
+        return RedirectResponse(url="/settings?error=Failed to save", status_code=303)
 
 @app.get("/inbox", response_class=HTMLResponse)
 async def inbox_view(request: Request):

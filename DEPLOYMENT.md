@@ -52,4 +52,8 @@ To put this online so your team can use it:
     ```
 4.  Add your `.env` variables (API Keys) in the Render dashboard.
 
+## 🔐 7. Secrets Management
+The app uses a local `secrets.json` file for storing API keys during development. **Do NOT commit this file.**
+-   In Production (Render/Heroku), use **Environment Variables** (e.g., `AI_API_KEY`, `SMTP_PASSWORD`) instead. The app will automatically read them.
+
 **That's it! Enjoy your custom AI engine.** 
