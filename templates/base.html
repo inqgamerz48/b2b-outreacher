@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2B Outreach Pro</title>
+    <!-- TailwindCSS from CDN (Production would use build step, but this is fine for MVP) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-white flex flex-col transition-all duration-300" id="sidebar">
+            <div class="h-16 flex items-center justify-center border-b border-slate-700">
+                <h1
+                    class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+                    <i class="fa-solid fa-paper-plane mr-2 text-blue-400"></i> Outreach Pro
+                </h1>
+            </div>
+
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="/"
+                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-slate-800 {% if page == 'dashboard' %}bg-blue-600 hover:bg-blue-700{% endif %}">
+                    <i class="fa-solid fa-chart-line w-6 text-center"></i>
+                    <span class="ml-3">Dashboard</span>
+                </a>
+                <a href="/campaigns"
+                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-slate-800 {% if page == 'campaigns' %}bg-blue-600 hover:bg-blue-700{% endif %}">
+                    <i class="fa-solid fa-layer-group w-6 text-center"></i>
+                    <span class="ml-3">Campaigns</span>
+                </a>
+                <a href="/leads"
+                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-slate-800 {% if page == 'leads' %}bg-blue-600 hover:bg-blue-700{% endif %}">
+                    <i class="fa-solid fa-users w-6 text-center"></i>
+                    <span class="ml-3">Leads</span>
+                </a>
+                <a href="/brain"
+                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-slate-800 {% if page == 'brain' %}bg-blue-600 hover:bg-blue-700{% endif %}">
+                    <i class="fa-solid fa-brain w-6 text-center"></i>
+                    <span class="ml-3">AI Brain</span>
+                </a>
+                <a href="/inbox"
+                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-slate-800 {% if page == 'inbox' %}bg-blue-600 hover:bg-blue-700{% endif %}">
+                    <i class="fa-solid fa-inbox w-6 text-center"></i>
+                    <span class="ml-3">Inbox / Replies</span>
+                </a>
+                <a href="/settings"
+                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-slate-800 {% if page == 'settings' %}bg-blue-600 hover:bg-blue-700{% endif %}">
+                    <i class="fa-solid fa-cog w-6 text-center"></i>
+                    <span class="ml-3">Settings</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-700">
+                <div class="flex items-center">
+                    <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold">
+                        ME
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium">User</p>
+                        <p class="text-xs text-slate-400">Pro Plan</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Topbar -->
+            <header
+                class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm z-10">
+                <div class="flex items-center text-gray-400 focus-within:text-gray-600">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="Search leads, campaigns..."
+                        class="ml-3 bg-transparent border-none focus:ring-0 text-sm w-64 text-gray-800 placeholder-gray-400">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-400 hover:text-gray-600 relative">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Global scripts if needed
+    </script>
+</body>
+
+</html>

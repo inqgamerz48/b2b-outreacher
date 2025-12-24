@@ -5,83 +5,102 @@ from email.mime.multipart import MIMEMultipart
 import sys
 import os
 import time
+from jinja2 import Template
 
 # Add parent to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
-from src import data_manager
+from src import campaign_manager, account_manager
 
-def send_email(lead):
+def render_template(template_str, lead_context):
+    """Renders the email template with lead data."""
+    try:
+        t = Template(template_str)
+        return t.render(**lead_context)
+    except Exception as e:
+        print(f"[ERROR] Template Render Failed: {e}")
+        return template_str
+
+def send_email_task(task_data):
     """
-    Sends a cold email to the lead.
+    Sends a cold email based on campaign task data.
+    Uses Inbox Rotation to pick an account.
     """
-    recipient_email = lead["Email"]
-    first_name = lead["Name"].split(" ")[0] if lead.get("Name") else "there"
-    personalization = lead.get("Personalization_Line", "")
+    recipient_email = task_data["email"]
     
-    subject = f"Question about {lead.get('Company', 'your business')}"
+    # 1. Get Sending Account
+    account = account_manager.get_next_available_account()
+    if not account:
+        print("[LIMIT] No active accounts with quota remaining.")
+        return False
+
+    # Prepare Context
+    first_name = task_data["name"].split(" ")[0] if task_data.get("name") else "there"
+    context = {
+        "name": task_data["name"],
+        "first_name": first_name,
+        "company": task_data["company"],
+        "personalization": task_data["personalization"] or "Hope you're doing well.",
+        "sender_name": "Agencies" # Generic name or pull from account?
+    }
     
-    body = f"""Hi {first_name},
-
-{personalization}
-
-I'm building a tool that helps agencies automate their backend workflows, and I thought it might be useful for what you're doing.
-
-Any interest in a 15-min chat next week to see if we can save you time?
-
-Best,
-{config.SENDER_NAME}
-
-P.S. Let me know if this isn’t relevant and I won’t follow up.
-"""
+    subject = render_template(task_data["subject"], context)
+    body = render_template(task_data["body_template"], context)
 
     msg = MIMEMultipart()
-    msg['From'] = f"{config.SENDER_NAME} <{config.SMTP_USER}>"
+    msg['From'] = f"{config.SENDER_NAME} <{account.email}>"
     msg['To'] = recipient_email
     msg['Subject'] = subject
     
     msg.attach(MIMEText(body, 'plain'))
     
     try:
-        # Check credentials
-        if not config.SMTP_USER or not config.SMTP_PASSWORD:
-            print("[ERROR] SMTP Credentials missing in config.py / .env")
-            return False
-            
-        server = smtplib.SMTP(config.SMTP_SERVER, config.SMTP_PORT)
+        server = smtplib.SMTP(account.smtp_server, account.smtp_port)
         server.starttls()
-        server.login(config.SMTP_USER, config.SMTP_PASSWORD)
+        server.login(account.username, account.password)
         text = msg.as_string()
-        server.sendmail(config.SMTP_USER, recipient_email, text)
+        server.sendmail(account.email, recipient_email, text)
         server.quit()
         
-        print(f"[SUCCESS] Email sent to {recipient_email}")
-        data_manager.mark_sent(recipient_email)
+        print(f"[SUCCESS] Sent Step {task_data['step_number']} to {recipient_email} via {account.email}")
+        
+        # Update DB State
+        campaign_manager.advance_lead(task_data["lead_obj"].id)
+        account_manager.increment_usage(account.id)
         return True
         
     except Exception as e:
-        print(f"[ERROR] Failed to send to {recipient_email}: {e}")
+        print(f"[ERROR] Failed to send to {recipient_email} via {account.email}: {e}")
+        # Automatically mark error or just retry? For now, log.
+        # account_manager.mark_error(account.id) 
         return False
 
 def process_email_queue():
-    """Reads unsent leads and sends emails up to the daily limit."""
-    leads = data_manager.get_unsent_leads(limit=config.MAX_EMAILS_PER_DAY)
+    """Reads due leads from Campaign Manager and sends."""
     
-    if not leads:
-        print("[INFO] No unsent leads found.")
+    # Sync config account just in case it's fresh
+    account_manager.sync_config_account()
+    
+    due_tasks = campaign_manager.get_due_leads()
+    
+    if not due_tasks:
+        print("[INFO] No emails due for sending.")
         return
 
-    print(f"[INFO] Found {len(leads)} unsent leads. Starting batch...")
+    print(f"[INFO] Found {len(due_tasks)} emails due. Starting batch...")
     
     count = 0
-    for lead in leads:
-        if not lead.get("Email"):
-            continue
-            
-        success = send_email(lead)
-        if success:
+    for task in due_tasks:
+        # Check global limit or just rely on account limits? 
+        # Rely on account limits (get_next_available_account will return None)
+        
+        if send_email_task(task):
             count += 1
-            # Wait between emails to look human/avoid spam filters
-            time.sleep(5) 
+            time.sleep(5) # Safety delay
+        else:
+            # If failed (likely no accounts), stop batch
+             if not account_manager.get_next_available_account():
+                 print("[STOP] No accounts available.")
+                 break
             
-    print(f"[DONE] Sent {count} emails.")
+    print(f"[DONE] Processed {count} emails.")

@@ -1,107 +1,75 @@
-# B2B Outreach System 🚀
+# 🚀 B2B Outreach Pro (SaaS Edition)
 
-A powerful, automated B2B cold outreach system designed to discover leads, enrich them with AI-generated personalization, and send cold emails efficiently.
+**The Ultimate AI-Powered Cold Email Engine.**  
+*Self-Hosted, Multi-Tenant, and Self-Learning.*
 
-## Features ✨
+![Dashboard Preview](https://cdn.dribbble.com/users/411475/screenshots/16279163/media/4c776483568c04ec52431770956973e6.png) 
+*(Note: Placeholder image, actual UI is built with TailwindCSS)*
 
-*   **Lead Discovery**: Scrapes potential leads based on queries (e.g., "SaaS Founder", "AI Agency Owner") using Google Search.
-*   **AI Enrichment**: Uses LLMs (OpenAI, Anthropic, or Gemini) to generate hyper-personalized email opening lines based on the lead's company and description.
-*   **Email Automation**: Sends cold emails with safety delays and daily limits to prevent spam flagging.
-*   **Interactive Dashboard**: A Streamlit-based dashboard to track metrics, manage leads, and monitor campaign progress.
-*   **Background Tasks**: Supports running scraping and sending tasks in the background via a persistent server.
+---
 
-## Prerequisites 🛠️
+## 🌟 Features
 
-*   Python 3.9+
-*   API Key for one of the supported AI providers:
-    *   OpenAI (GPT-3.5/4)
-    *   Anthropic (Claude)
-    *   Google Gemini
-*   SMTP Credentials for sending emails (e.g., Gmail App Password, SendGrid, etc.)
+### 🧠 1. Self-Learning AI Brain (RAG)
+- **Custom Knowledge**: Feed it your case studies, tone guides, and offers.
+- **Auto-Training**: Pulls 1000+ real-world examples from Hugging Face to learn "good" copywriting instantly.
+- **Context Aware**: Every email it writes is hyper-personalized using your unique brain data.
 
-## Installation 📦
+### 🫧 2. Multi-Tenant SaaS Architecture
+- **User "Bubbles"**: Strictly isolates data between users. A perfect foundation for selling this as a SaaS.
+- **Global vs. Private Memory**: All users share the "Global" master training, but keep their own "Private" offers/data secret.
 
-1.  **Clone the repository:**
-    ```bash
-    git clone <repository_url>
-    cd b2b-outreach
-    ```
+### 📧 3. Advanced Outreach Engine
+- **Smart Drip Sequences**: Visual campaign builder with delays and follow-ups.
+- **Inbox Rotation**: Load balance sending across multiple SMTP accounts to avoid spam filters.
+- **Deep Scraping**: Spider crawls websites to find hidden contacts (not just homepage `mailto:`).
+- **Reply Monitor**: AI reads replies and categorizes them (Interested, OOO, Not Interested).
 
-2.  **Create and activate a virtual environment:**
-    ```bash
-    python -m venv venv
-    # Windows
-    venv\Scripts\activate
-    # Mac/Linux
-    source venv/bin/activate
-    ```
+### 🎨 4. Modern UI & Security
+- **Tech**: FastAPI + Jinja2 + TailwindCSS.
+- **Auth**: Secure Login/Registration with hashed passwords.
+- **Dashboard**: Real-time charts and activity feeds.
 
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+---
 
-## Configuration ⚙️
+## 🛠️ Quick Start
 
-1.  Create a `.env` file in the root directory:
-    ```bash
-    copy .env.example .env  # (Or just create it manually)
-    ```
-
-2.  Add your configuration details to `.env`:
-    ```ini
-    # AI Configuration
-    AI_PROVIDER=openai # openai, anthropic, google, or custom
-    AI_API_KEY=sk-...
-    AI_MODEL=gpt-3.5-turbo
-
-    # Email Configuration
-    SMTP_SERVER=smtp.gmail.com
-    SMTP_PORT=587
-    SMTP_USERNAME=your_email@gmail.com
-    SMTP_PASSWORD=your_app_password
-    EMAIL_FROM=your_email@gmail.com
-    DAILY_LIMIT=50
-    ```
-
-## Usage 🚀
-
-### 1. Interactive Dashboard (Recommended)
-Run the Streamlit dashboard to manage everything visually.
+### 1. Installation
 ```bash
-streamlit run Home.py
+pip install -r requirements.txt
 ```
 
-### 2. Command Line Interface (CLI)
-You can also use the CLI for specific tasks.
+### 2. Verify System
+Run the automated diagnostic suite to ensure DB, Auth, and AI are healthy.
+```bash
+python verify_system.py
+```
 
-*   **Scrape Leads:**
-    ```bash
-    python main.py scrape
-    ```
-*   **Enrich Leads (Generate AI Lines):**
-    ```bash
-    python main.py enrich
-    ```
-*   **Send Emails:**
-    ```bash
-    python main.py send
-    ```
-
-### 3. API Server
-Run the FastAPI server to handle background tasks or programmatic access.
+### 3. Launch
 ```bash
 python server.py
 ```
+Visit **http://localhost:8000**
+- **Default Admin**: `admin` / `password123`
+- Or click **"Create Account"** to register a new user.
 
-## Project Structure 📂
+### 4. Train the Brain (Optional)
+Pull ~1200 training examples from the web:
+```bash
+python import_hf.py
+```
 
-*   `main.py`: CLI entry point.
-*   `Home.py`: Streamlit dashboard entry point.
-*   `server.py`: FastAPI backend.
-*   `src/`: Core logic modules (scraper, ai_engine, email_sender, data_manager).
-*   `data/`: Stores local database (Excel/CSV) and logs.
-*   `pages/`: Additional Streamlit pages.
+---
 
-## License 📄
-[MIT License](LICENSE)
+## 📂 Project Structure
+- **`src/`**: Core logic (AI, Scraper, Emailer).
+- **`templates/`**: HTML Frontend (Tailwind).
+- **`tests/`**: Pytest suite.
+- **`archive/`**: Old scripts.
+- **`DEPLOYMENT.md`**: Detailed guide for pushing to Cloud (Render/Heroku).
+
+---
+
+## 🛡️ License
+Proprietary / Closed Source.
+Built for the User.
