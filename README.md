@@ -39,19 +39,16 @@
 pip install -r requirements.txt
 ```
 
-### 2. Verify System
-Run the automated diagnostic suite to ensure DB, Auth, and AI are healthy.
-```bash
-python verify_system.py
-```
-
-### 3. Launch
+### 2. Launch Cloud App
 ```bash
 python server.py
 ```
 Visit **http://localhost:8000**
 - Click **"Create Account"** to register your Admin user.
-- The first registered user acts as the system owner.
+
+### 3. Verify & Train (Web UI)
+- Go to **/brain** ➔ Click **"Health"** to verify system.
+- Go to **/brain** ➔ Click **"Auto-Train"** to enrich AI.
 
 ### 4. Train the Brain (Optional)
 Pull ~1200 training examples from the web:

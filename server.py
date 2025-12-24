@@ -61,7 +61,7 @@ async def login(response: Response, username: str = Form(...), password: str = F
     
     if user and auth.verify_password(password, user.password_hash):
         # Success
-        resp = RedirectResponse(url="/", status_code=303)
+        resp = RedirectResponse(url="/dashboard", status_code=303)
         resp.set_cookie(key="session_user", value=user.username, httponly=True)
         return resp
     else:
@@ -105,9 +105,24 @@ def get_user_from_request(request: Request, db):
     return db.query(User).filter(User.username == username).first()
 
 @app.get("/", response_class=HTMLResponse)
+async def landing_page(request: Request):
+    """
+    Public Landing Page.
+    Redirects to dashboard if already logged in.
+    """
+    db = next(get_db())
+    user = get_user_from_request(request, db)
+    db.close()
+    
+    if user:
+        return RedirectResponse("/dashboard")
+    
+    return templates.TemplateResponse("landing.html", {"request": request})
+
+@app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request):
     """
-    Main Dashboard View.
+    Main Dashboard View (Protected).
     """
     db = next(get_db())
     user = get_user_from_request(request, db)
@@ -268,5 +283,92 @@ def trigger_send(background_tasks: BackgroundTasks):
     background_tasks.add_task(email_sender.process_email_queue)
     return {"message": "Sending started"}
 
+# --- Cloud Admin Routes ---
+
+@app.post("/admin/train")
+async def admin_train(request: Request, background_tasks: BackgroundTasks):
+    db = next(get_db())
+    user = get_user_from_request(request, db)
+    if not user:
+        db.close()
+        return RedirectResponse("/login")
+    db.close()
+
+    # Run in background
+    from src import ai_trainer
+    background_tasks.add_task(ai_trainer.import_hf_data)
+    
+    return RedirectResponse(url="/brain?msg=Training Started in Background", status_code=303)
+
+@app.get("/admin/health", response_class=HTMLResponse)
+async def admin_health(request: Request):
+    """
+    Runs the system verification suite and shows a report card.
+    """
+    db = next(get_db())
+    user = get_user_from_request(request, db)
+    if not user:
+        db.close()
+        return RedirectResponse("/login")
+    db.close() # Close quickly
+    
+    # Run Pytest and capture output
+    import pytest
+    from io import StringIO
+    
+    # Redirect stdout to capture test output
+    capture = StringIO()
+    old_stdout = sys.stdout
+    sys.stdout = capture
+    
+    try:
+        # Run tests/test_system.py
+        # clean output, verbose
+        exit_code = pytest.main(["-v", "tests/test_system.py"])
+    except Exception as e:
+        exit_code = 1
+        print(f"Test Execution Failed: {e}")
+    finally:
+        sys.stdout = old_stdout # Restore stdout
+        
+    output_log = capture.getvalue()
+    status = "Healthy" if exit_code == 0 else "Issues Detected"
+    color = "text-emerald-600 font-bold" if exit_code == 0 else "text-red-600 font-bold"
+    
+    html_report = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>System Health</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>@import url('https://fonts.googleapis.com/css2?family=Inter:300,400,600&display=swap'); body {{ font-family: 'Inter', sans-serif; }}</style>
+    </head>
+    <body class="bg-gray-50 p-10">
+        <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">System Health Report</h1>
+                <a href="/dashboard" class="text-blue-600 hover:underline">Back to Dashboard</a>
+            </div>
+            
+            <div class="mb-6 p-4 bg-gray-50 rounded border border-gray-200">
+                <p class="text-lg">Status: <span class="{color}">{status}</span></p>
+            </div>
+            
+            <div class="bg-black text-green-400 p-4 rounded font-mono text-sm overflow-x-auto whitespace-pre">
+{{output_log}}
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    
+    return HTMLResponse(content=html_report)
+
 if __name__ == "__main__":
+    print("[INFO] Cloud Server Starting...")
+    print("[INFO] Initializing Database...")
+    data_manager.initialize_db()
+    print("[INFO] DB Ready. Listening on 0.0.0.0:8000")
     uvicorn.run(app, host="0.0.0.0", port=8000)

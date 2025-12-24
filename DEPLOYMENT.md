@@ -27,40 +27,17 @@ Before you start, you need to make sure your computer has the "libraries" instal
 
 ---
 
-## ✅ 3. Verification (Pre-Flight Check)
-Before you fly, you must check the engine. I have built a master tool for this.
-
-1.  Run the verification scanner:
-    ```bash
-    python verify_system.py
-    ```
-2.  **Look for green checks**. If it says **"ALL SYSTEMS OPERATIONAL"**, you are good to go.
-
----
-
-## 🚀 4. Launching the App
-Now, let's turn it on.
-
+## ✅ 3. Launching
 1.  Run the server:
     ```bash
     python server.py
     ```
-2.  Open your browser and visit:
-    👉 **http://localhost:8000**
+2.  Open **http://localhost:8000**
+3.  Register your Admin user.
 
-3.  **Log In**:
-    - Click **"Create Account"** to register your Admin user.
-    - The first registered user acts as the system owner.
-
----
-
-## 🧠 5. Enhancing the AI (Optional)
-Want to make the AI smarter?
-1.  Run the enrichment script:
-    ```bash
-    python import_hf.py
-    ```
-    *This will ingest 1000+ curated examples to improve generation quality.*
+## 🧠 4. Admin Tools (Web UI)
+- **System Health**: Go to `/brain` -> Click "Health".
+- **AI Training**: Go to `/brain` -> Click "Auto-Train".
 
 ---
 
