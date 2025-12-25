@@ -104,3 +104,25 @@ def process_email_queue():
                  break
             
     print(f"[DONE] Processed {count} emails.")
+
+def check_bounces():
+    """
+    Connects to IMAP to check for bounce messages.
+    (Skeleton logic - requires IMAP credentials in SMTPAccount)
+    """
+    import imaplib
+    import email
+    
+    # In a real system, we would iterate through all accounts
+    # account = account_manager.get_account(...)
+    
+    print("[INFO] Checking for bounces (Skeleton Mode)...")
+    
+    # Pseudo-code for production implementation:
+    # mail = imaplib.IMAP4_SSL(account.imap_server)
+    # mail.login(account.email, account.password)
+    # mail.select('inbox')
+    # status, messages = mail.search(None, '(SUBJECT "Delivery Status Notification")')
+    # ... process bounces ...
+    
+    print("[INFO] No bounces found (Simulation).")

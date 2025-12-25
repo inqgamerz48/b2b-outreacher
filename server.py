@@ -316,8 +316,28 @@ def trigger_scrape(background_tasks: BackgroundTasks):
         queries = ["AI agency founder", "SaaS founder"]
         leads = scraper.run_discovery(queries)
         for lead in leads:
-             # Basic add logic (would need to be improved to use DB session directly)
-             pass 
+             # Add to DB
+             db = next(data_manager.get_db())
+             try:
+                 # Check if exists
+                 exists = db.query(Lead).filter_by(email=lead["Email"]).first()
+                 if not exists:
+                     new_lead = Lead(
+                         user_id=1, # Default to admin for background scrapes (simplification)
+                         email=lead["Email"],
+                         first_name=lead["Name"], # Scraper returns "Name": "Founder" usually
+                         company=lead["Company"],
+                         job_title="Founder",
+                         status="New",
+                         source="Auto-Scraper"
+                     )
+                     db.add(new_lead)
+                     db.commit()
+                     print(f"[DB] Saved lead: {lead['Email']}")
+             except Exception as e:
+                 print(f"[ERROR] DB Save failed: {e}")
+             finally:
+                 db.close()
     background_tasks.add_task(task)
     return {"message": "Scraping started"}
 
